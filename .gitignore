@@ -1,0 +1,36 @@
+# === CCTV & Stream Configurations (SECURITY) ===
+# جلوگیری از افشای آدرس IP و مانیفست استریم دوربین‌ها در گیت‌هاب
+hls.txt
+mhls.txt
+
+# === Backup & Archive Files ===
+# مخفی کردن فایل‌های فشرده و بک‌آپ‌های محلی پروژه
+*.rar
+*.zip
+*.7z
+*.tar.gz
+*.gz
+
+# === Operating System Files ===
+# فایل‌های توکار و مخفی سیستم‌عامل‌ها
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# === IDEs and Editors ===
+# تنظیمات محیط‌های کدنویسی و ادیتورها
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# === Local Server Logs ===
+# لاگ‌های ایجاد شده توسط وب‌سرورهای محلی
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
