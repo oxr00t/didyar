@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1565c0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png">
+    <link rel="shortcut icon" href="/assets/icon-192.png">
+
+    <link rel="manifest" href="manifest.json">
+    <title>Didyar App</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+    <div id="login-screen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>ورود به سیستم</h1>
+            </div>
+            <div class="login-form">
+                <div class="input-group">
+                    <input type="text" id="login-username" placeholder="نام کاربری" autocomplete="username">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="login-password" placeholder="کلمه عبور" autocomplete="current-password">
+                </div>
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" id="remember-login">
+                        <span>ذخیره ورود</span>
+                    </label>
+                </div>
+                <div id="login-error" class="login-error"></div>
+                <button id="login-btn" class="login-btn">ورود</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-app" class="main-app" style="display: none;">
+        
+        <div class="header" id="header">
+            <div class="header-bar">
+                <button id="menu-toggle-btn" class="menu-toggle-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <h2 id="current-page-title">زنده</h2>
+            </div>
+        </div>
+
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
+        <div id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h3> دیدیار</h3>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="sidebar-btn active" data-tab="live">
+                    <span class="icon">📹</span> زنده
+                </button>
+                <button class="sidebar-btn" data-tab="records">
+                    <span class="icon">📼</span> ضبط‌ها
+                </button>
+                <button class="sidebar-btn" data-tab="settings">
+                    <span class="icon">⚙️</span> تنظیمات
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <span>نسخه ۱.۰.۰</span>
+            </div>
+        </div>
+
+        <div class="main-content" id="main-content">
+            <div id="live-tab" class="tab-content">
+                <div class="camera-groups-bar">
+                    <select id="camera-group-select">
+                        <option value="ALL">همه دوربین‌ها</option>
+                    </select>
+                    <select id="grid-size-select" style="max-width: 80px;">
+                          <option value="1">۱ تایی</option>
+                          <option value="2">۲ تایی</option>
+                          <option value="3">۳ تایی</option>
+                          <option value="4" >۴ تایی</option>
+                          <option value="6">۶ تایی</option>
+                          <option value="8" selected >۸ تایی</option>
+                     </select>
+                    <button id="add-camera-group-btn">افزودن دسته جدید</button>
+                    <button id="delete-camera-group-btn">حذف دسته</button>
+                </div>
+                <div id="live-container" class="live-container"></div>
+                <div id="page-indicators" class="page-indicators"></div>
+            </div>
+
+<div id="records-tab" class="tab-content">
+    <div class="playback-container">
+        <h2 class="playback-title">بازبینی تصاویر ضبط شده</h2>
+
+        <!-- فرم انتخاب دوربین و تاریخ (بدون تغییر) -->
+        <div class="playback-form">
+            <div class="control-group">
+                <label>انتخاب دوربین:</label>
+                <select id="playback-camera-select">
+                    <option value="" disabled selected>انتخاب دوربین...</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>انتخاب تاریخ:</label>
+                <input type="date" id="playback-date">
+            </div>
+            <button id="search-records-btn" class="action-btn">جستجو</button>
+        </div>
+
+        <!-- کانتینر ویدیو پلیر (بدون تغییر) -->
+        <div id="playback-video-container" style="display: none;">
+            <video id="playback-video" controls></video>
+            <div id="playback-loading" class="spinner-overlay" style="display: none;">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <!-- کانتینر جدید برای تایم‌لاین -->
+        <div id="timeline-section" style="display: none;">
+            <div class="timeline-container">
+                <div class="timeline-track"></div>
+                <div id="timeline-segments" class="timeline-segments-container">
+                    <!-- بخش‌های ضبط شده اینجا اضافه می‌شوند -->
+                </div>
+                <div id="timeline-playhead" class="timeline-playhead"></div>
+                <div id="timeline-tooltip" class="timeline-tooltip"></div>
+            </div>
+            <div class="timeline-labels">
+                <span>00:00</span>
+                <span>06:00</span>
+                <span>12:00</span>
+                <span>18:00</span>
+                <span>23:59</span>
+            </div>
+        </div>
+
+        <!-- پیام اولیه -->
+        <div id="records-placeholder">
+            <p>برای مشاهده تایم‌لاین، دوربین و تاریخ را انتخاب و روی جستجو کلیک کنید.</p>
+        </div>
+    </div>
+</div>
+
+
+            <div id="settings-tab" class="tab-content">
+                <div class="settings-container">
+                    <div class="input-group">
+                        <input type="text" id="server-address" placeholder="آدرس سرور" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="port1" placeholder="پورت ۱" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="port2" placeholder="پورت ۲" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password" placeholder=" کلمه عبور جدید" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="communication-key" placeholder="کلید ارتباطی" autocomplete="off">
+                    </div>
+                    
+                    <button id="save-settings" class="save-btn">ذخیره</button>
+                    <button id="logout-btn" class="logout-btn">خروج از حساب کاربری</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="fullscreen-view" class="fullscreen-view">
+       
+        <div id="fullscreen-controls" class="fullscreen-controls">
+            <button id="fullscreen-close" class="fullscreen-close-btn">✕</button>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+    <div id="register-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2>ساخت نام کاربری و رمز جدید</h2>
+            <label>نام کاربری جدید:</label>
+            <input type="text" id="register-username" maxlength="32">
+            <label>رمز جدید:</label>
+            <input type="password" id="register-password" maxlength="32">
+            <button id="register-btn">ثبت اطلاعات</button>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
